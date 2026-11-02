@@ -39,10 +39,7 @@ export default function CreateEventPage() {
     }
   }, [isPending, session, router]);
 
-  const updateField = (
-    field: keyof typeof form,
-    value: string
-  ) => {
+  const updateField = (field: keyof typeof form, value: string) => {
     setForm((previous) => ({
       ...previous,
       [field]: value,
@@ -58,8 +55,50 @@ export default function CreateEventPage() {
       return;
     }
 
-    if (new Date(form.eventDate) <= new Date()) {
-      toast.error("Please select a future event date");
+    const title = form.title.trim();
+    const description = form.description.trim();
+    const location = form.location.trim();
+    const thumbnailUrl = form.thumbnailUrl.trim();
+
+    if (title.length < 5 || title.length > 100) {
+      toast.error("Event title must be between 5 and 100 characters");
+      return;
+    }
+
+    if (description.length < 20 || description.length > 2000) {
+      toast.error("Description must be between 20 and 2000 characters");
+      return;
+    }
+
+    if (!eventTypes.includes(form.eventType)) {
+      toast.error("Please select a valid event category");
+      return;
+    }
+
+    try {
+      const imageURL = new URL(thumbnailUrl);
+
+      if (!["http:", "https:"].includes(imageURL.protocol)) {
+        throw new Error("Invalid image URL");
+      }
+    } catch {
+      toast.error("Please enter a valid image URL");
+      return;
+    }
+
+    if (location.length < 3 || location.length > 150) {
+      toast.error("Location must be between 3 and 150 characters");
+      return;
+    }
+
+    const selectedDate = new Date(form.eventDate);
+
+    if (
+      !form.eventDate ||
+      Number.isNaN(selectedDate.getTime()) ||
+      selectedDate <= new Date()
+    ) {
+      toast.error("Please select a valid future event date");
       return;
     }
 
@@ -70,7 +109,9 @@ export default function CreateEventPage() {
         await authClient.token();
 
       if (tokenError || !tokenData?.token) {
-        throw new Error("Authentication token unavailable. Please log in again.");
+        throw new Error(
+          "Authentication token unavailable. Please log in again."
+        );
       }
 
       await apiFetch("/api/events", {
@@ -79,8 +120,12 @@ export default function CreateEventPage() {
           Authorization: `Bearer ${tokenData.token}`,
         },
         body: JSON.stringify({
-          ...form,
-          eventDate: new Date(form.eventDate).toISOString(),
+          title,
+          description,
+          eventType: form.eventType,
+          thumbnailUrl,
+          location,
+          eventDate: selectedDate.toISOString(),
         }),
       });
 
@@ -151,7 +196,10 @@ export default function CreateEventPage() {
           </div>
 
           <div>
-            <label htmlFor="description" className="mb-2 block text-sm font-semibold">
+            <label
+              htmlFor="description"
+              className="mb-2 block text-sm font-semibold"
+            >
               Event Description
             </label>
             <textarea
@@ -161,7 +209,9 @@ export default function CreateEventPage() {
               maxLength={2000}
               rows={5}
               value={form.description}
-              onChange={(event) => updateField("description", event.target.value)}
+              onChange={(event) =>
+                updateField("description", event.target.value)
+              }
               placeholder="Explain the purpose of your event and how people can participate..."
               className="w-full resize-y rounded-xl border border-[#dfe6df] bg-[#fbfcfa] px-4 py-3 text-sm leading-7 outline-none transition focus:border-[#6d9878] focus:ring-2 focus:ring-[#6d9878]/15 dark:border-[#344b3d] dark:bg-[#101c16]"
             />
@@ -171,14 +221,19 @@ export default function CreateEventPage() {
           </div>
 
           <div>
-            <label htmlFor="eventType" className="mb-2 block text-sm font-semibold">
+            <label
+              htmlFor="eventType"
+              className="mb-2 block text-sm font-semibold"
+            >
               Event Category
             </label>
             <select
               id="eventType"
               required
               value={form.eventType}
-              onChange={(event) => updateField("eventType", event.target.value)}
+              onChange={(event) =>
+                updateField("eventType", event.target.value)
+              }
               className="w-full rounded-xl border border-[#dfe6df] bg-[#fbfcfa] px-4 py-3 text-sm outline-none focus:border-[#6d9878] dark:border-[#344b3d] dark:bg-[#101c16]"
             >
               <option value="">Select an event category</option>
@@ -191,7 +246,10 @@ export default function CreateEventPage() {
           </div>
 
           <div>
-            <label htmlFor="thumbnailUrl" className="mb-2 flex items-center gap-2 text-sm font-semibold">
+            <label
+              htmlFor="thumbnailUrl"
+              className="mb-2 flex items-center gap-2 text-sm font-semibold"
+            >
               <ImagePlus size={17} className="text-[#6d9878]" />
               Thumbnail Image URL
             </label>
@@ -200,14 +258,19 @@ export default function CreateEventPage() {
               type="url"
               required
               value={form.thumbnailUrl}
-              onChange={(event) => updateField("thumbnailUrl", event.target.value)}
+              onChange={(event) =>
+                updateField("thumbnailUrl", event.target.value)
+              }
               placeholder="https://example.com/event-image.jpg"
               className="w-full rounded-xl border border-[#dfe6df] bg-[#fbfcfa] px-4 py-3 text-sm outline-none focus:border-[#6d9878] dark:border-[#344b3d] dark:bg-[#101c16]"
             />
           </div>
 
           <div>
-            <label htmlFor="location" className="mb-2 flex items-center gap-2 text-sm font-semibold">
+            <label
+              htmlFor="location"
+              className="mb-2 flex items-center gap-2 text-sm font-semibold"
+            >
               <MapPin size={17} className="text-[#6d9878]" />
               Event Location
             </label>
@@ -215,6 +278,7 @@ export default function CreateEventPage() {
               id="location"
               required
               minLength={3}
+              maxLength={150}
               value={form.location}
               onChange={(event) => updateField("location", event.target.value)}
               placeholder="e.g. Mirpur 10, Dhaka"
@@ -223,7 +287,10 @@ export default function CreateEventPage() {
           </div>
 
           <div>
-            <label htmlFor="eventDate" className="mb-2 flex items-center gap-2 text-sm font-semibold">
+            <label
+              htmlFor="eventDate"
+              className="mb-2 flex items-center gap-2 text-sm font-semibold"
+            >
               <CalendarDays size={17} className="text-[#6d9878]" />
               Event Date
             </label>
@@ -231,11 +298,15 @@ export default function CreateEventPage() {
               id="eventDate"
               type="datetime-local"
               required
-              min={new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+              min={new Date(
+                Date.now() - new Date().getTimezoneOffset() * 60000
+              )
                 .toISOString()
                 .slice(0, 16)}
               value={form.eventDate}
-              onChange={(event) => updateField("eventDate", event.target.value)}
+              onChange={(event) =>
+                updateField("eventDate", event.target.value)
+              }
               className="w-full rounded-xl border border-[#dfe6df] bg-[#fbfcfa] px-4 py-3 text-sm outline-none focus:border-[#6d9878] dark:border-[#344b3d] dark:bg-[#101c16]"
             />
           </div>
@@ -252,4 +323,3 @@ export default function CreateEventPage() {
     </main>
   );
 }
-
