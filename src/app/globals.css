@@ -1,26 +1,69 @@
+
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f8f8f3;
+  --foreground: #172b22;
+  --primary: #245b43;
+  --secondary: #e8efe8;
+  --muted: #718078;
+  --border: #e5e9e2;
+}
+
+.dark {
+  --background: #101c16;
+  --foreground: #edf5ee;
+  --primary: #9ac8a6;
+  --secondary: #1b2b21;
+  --muted: #a0b2a5;
+  --border: #344b3d;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: Arial, Helvetica, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--background);
 }
 
 body {
+  margin: 0;
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  transition:
+    background-color 250ms ease,
+    color 250ms ease;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+::selection {
+  background: #c9ddce;
+  color: #172b22;
 }
