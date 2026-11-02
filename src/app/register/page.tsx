@@ -40,6 +40,15 @@ export default function RegisterPage() {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    const trimmedName = form.name.trim();
+    const trimmedEmail = form.email.trim();
+    const trimmedImage = form.image.trim();
+
+    if (trimmedName.length < 2 || trimmedName.length > 50) {
+      toast.error("Name must be between 2 and 50 characters");
+      return;
+    }
+
     if (!/[a-z]/.test(form.password)) {
       toast.error("Password must contain at least one lowercase letter");
       return;
@@ -55,14 +64,27 @@ export default function RegisterPage() {
       return;
     }
 
+    if (trimmedImage) {
+      try {
+        const imageURL = new URL(trimmedImage);
+
+        if (!["http:", "https:"].includes(imageURL.protocol)) {
+          throw new Error("Invalid image URL");
+        }
+      } catch {
+        toast.error("Please enter a valid profile photo URL");
+        return;
+      }
+    }
+
     try {
       setLoading(true);
 
       const { error } = await authClient.signUp.email({
-        name: form.name.trim(),
-        email: form.email.trim(),
+        name: trimmedName,
+        email: trimmedEmail,
         password: form.password,
-        image: form.image.trim() || undefined,
+        image: trimmedImage || undefined,
         callbackURL: "/",
       });
 
