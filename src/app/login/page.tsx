@@ -15,6 +15,16 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
+
+  const getRedirectTo = () => {
+    const params = new URLSearchParams(window.location.search);
+    const requestedPath = params.get("redirect");
+
+    return requestedPath?.startsWith("/") && !requestedPath.startsWith("//")
+      ? requestedPath
+      : "/";
+  };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -22,17 +32,10 @@ export default function LoginPage() {
     try {
       setLoading(true);
 
-      const params = new URLSearchParams(window.location.search);
-      const requestedPath = params.get("redirect");
-      const redirectTo =
-        requestedPath?.startsWith("/") && !requestedPath.startsWith("//")
-          ? requestedPath
-          : "/";
-
       const { error } = await authClient.signIn.email({
         email: email.trim(),
         password,
-        callbackURL: redirectTo,
+        callbackURL: getRedirectTo(),
       });
 
       if (error) {
@@ -40,7 +43,7 @@ export default function LoginPage() {
       }
 
       toast.success("Welcome back to Kindora!");
-      router.push(redirectTo);
+      router.push(getRedirectTo());
       router.refresh();
     } catch (error) {
       toast.error(
@@ -48,6 +51,28 @@ export default function LoginPage() {
       );
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    try {
+      setGoogleLoading(true);
+
+      const { error } = await authClient.signIn.social({
+        provider: "google",
+        callbackURL: getRedirectTo(),
+      });
+
+      if (error) {
+        throw new Error(error.message || "Google login failed");
+      }
+    } catch (error) {
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Google login failed. Please try again."
+      );
+      setGoogleLoading(false);
     }
   };
 
@@ -119,13 +144,29 @@ export default function LoginPage() {
 
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || googleLoading}
               className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#245b43] px-6 py-4 text-sm font-semibold text-white transition hover:bg-[#194832] disabled:cursor-not-allowed disabled:opacity-60"
             >
               {loading ? "Signing In..." : "Sign In"}
               {!loading && <ArrowRight size={17} />}
             </button>
           </form>
+
+          <div className="my-6 flex items-center gap-4">
+            <div className="h-px flex-1 bg-[#e5e9e2] dark:bg-[#344b3d]" />
+            <span className="text-xs font-medium text-[#829087]">OR CONTINUE WITH</span>
+            <div className="h-px flex-1 bg-[#e5e9e2] dark:bg-[#344b3d]" />
+          </div>
+
+          <button
+            type="button"
+            onClick={handleGoogleSignIn}
+            disabled={loading || googleLoading}
+            className="flex w-full items-center justify-center gap-3 rounded-xl border border-[#dfe6df] bg-white px-6 py-3.5 text-sm font-semibold text-[#25372d] transition hover:bg-[#f5f7f4] disabled:cursor-not-allowed disabled:opacity-60 dark:border-[#344b3d] dark:bg-[#17271d] dark:text-[#edf5ee] dark:hover:bg-[#203629]"
+          >
+            <span className="text-lg font-bold text-[#4285F4]">G</span>
+            {googleLoading ? "Connecting to Google..." : "Continue with Google"}
+          </button>
 
           <p className="mt-7 text-center text-sm text-[#718078] dark:text-[#a0b2a5]">
             Don't have an account?{" "}
