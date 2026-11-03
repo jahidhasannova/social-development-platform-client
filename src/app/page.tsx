@@ -133,10 +133,10 @@ export default async function Home() {
               </Link>
 
               <Link
-                href="/register"
+                href="/create-event"
                 className="inline-flex items-center gap-2 rounded-full border border-[#dce4dc] px-7 py-4 text-sm font-semibold text-[#245b43] transition hover:bg-[#edf4ec] dark:border-[#405b49] dark:text-[#a9d2b3] dark:hover:bg-[#1b2b21]"
               >
-                Get Involved
+                Create an Event
                 <ArrowUpRight size={17} />
               </Link>
             </div>
