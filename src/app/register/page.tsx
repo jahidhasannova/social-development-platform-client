@@ -226,7 +226,7 @@ export default function RegisterPage() {
                   aria-label={showPassword ? "Hide password" : "Show password"}
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-[#718078]"
                 >
-                  {showPassword ? <EyeOff size={19} /> : <Eye size={19} />}
+                  {showPassword ? <Eye size={19} /> : <EyeOff size={19} />}
                 </button>
               </div>
               <p className="mt-2 text-xs leading-5 text-[#829188]">

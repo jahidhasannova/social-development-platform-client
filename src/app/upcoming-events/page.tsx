@@ -1,6 +1,7 @@
 
 import Link from "next/link";
 import { CalendarDays, MapPin, ArrowRight, HeartHandshake } from "lucide-react";
+import EventFilters from "@/components/EventFilters";
 
 interface Event {
   _id: string;
@@ -60,67 +61,21 @@ export default async function UpcomingEventsPage() {
         </div>
 
         {events.length === 0 ? (
-          <div className="rounded-3xl border border-dashed border-[#cbd8cc] bg-white px-6 py-20 text-center dark:border-[#344b3d] dark:bg-[#17271d]">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-[#e8efe8] text-[#245b43] dark:bg-[#263c30] dark:text-[#a9d2b3]">
-              <CalendarDays size={30} />
-            </div>
-            <h2 className="mt-6 text-xl font-bold">
-              No upcoming events yet
-            </h2>
-            <p className="mx-auto mt-3 max-w-md text-sm leading-7 text-[#718078] dark:text-[#a0b2a5]">
-              New community initiatives will appear here. Check back soon and
-              be ready to make a difference.
-            </p>
-          </div>
-        ) : (
-          <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
-            {events.map((event) => (
-              <article
-                key={event._id}
-                className="group overflow-hidden rounded-3xl border border-[#e5e9e2] bg-white transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#172b22]/10 dark:border-[#344b3d] dark:bg-[#17271d]"
-              >
-                <div className="relative h-56 overflow-hidden bg-[#e8efe8] dark:bg-[#263c30]">
-                  <img
-                    src={event.thumbnailUrl}
-                    alt={event.title}
-                    className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                  />
-                  <span className="absolute left-4 top-4 rounded-full bg-white/95 px-3 py-1.5 text-xs font-semibold text-[#245b43] shadow-sm">
-                    {event.eventType}
-                  </span>
-                </div>
-
-                <div className="p-6">
-                  <div className="flex items-center gap-2 text-xs font-medium text-[#6d9878]">
-                    <CalendarDays size={15} />
-                    {formatDate(event.eventDate)}
-                  </div>
-
-                  <h2 className="mt-3 line-clamp-2 text-xl font-bold leading-8">
-                    {event.title}
-                  </h2>
-
-                  <p className="mt-3 line-clamp-3 min-h-[72px] text-sm leading-6 text-[#718078] dark:text-[#a0b2a5]">
-                    {event.description}
-                  </p>
-
-                  <div className="mt-5 flex items-center gap-2 border-t border-[#edf0eb] pt-4 text-sm text-[#718078] dark:border-[#344b3d] dark:text-[#a0b2a5]">
-                    <MapPin size={16} className="shrink-0 text-[#6d9878]" />
-                    <span className="truncate">{event.location}</span>
-                  </div>
-
-                  <Link
-                    href={`/upcoming-events/${event._id}`}
-                    className="mt-5 flex items-center justify-center gap-2 rounded-xl bg-[#245b43] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#194832]"
-                  >
-                    View Details
-                    <ArrowRight size={16} />
-                  </Link>
-                </div>
-              </article>
-            ))}
-          </div>
-        )}
+  <div className="rounded-3xl border border-dashed border-[#cbd8cc] bg-white px-6 py-20 text-center dark:border-[#344b3d] dark:bg-[#17271d]">
+    <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-[#e8efe8] text-[#245b43] dark:bg-[#263c30] dark:text-[#a9d2b3]">
+      <CalendarDays size={30} />
+    </div>
+    <h2 className="mt-6 text-xl font-bold">
+      No upcoming events yet
+    </h2>
+    <p className="mx-auto mt-3 max-w-md text-sm leading-7 text-[#718078] dark:text-[#a0b2a5]">
+      New community initiatives will appear here. Check back soon and
+      be ready to make a difference.
+    </p>
+  </div>
+) : (
+  <EventFilters events={events} />
+)}
 
         <div className="mt-16 rounded-3xl bg-[#e8efe8] px-6 py-10 text-center dark:bg-[#1b2b21] sm:px-12">
           <h2 className="text-2xl font-bold">

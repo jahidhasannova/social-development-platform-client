@@ -1,7 +1,6 @@
-
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -12,6 +11,7 @@ import {
   X,
   LoaderCircle,
   ArrowRight,
+  Eye,
 } from "lucide-react";
 import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
@@ -29,6 +29,16 @@ interface Event {
 
 type EventForm = Omit<Event, "_id" | "creatorEmail">;
 
+const eventTypes = [
+  "Food Distribution",
+  "Clothes Distribution",
+  "Education",
+  "Healthcare",
+  "Environmental",
+  "Community Support",
+  "Other",
+];
+
 const emptyForm: EventForm = {
   title: "",
   description: "",
@@ -36,6 +46,19 @@ const emptyForm: EventForm = {
   thumbnailUrl: "",
   location: "",
   eventDate: "",
+};
+
+const toLocalDateTime = (date: string) => {
+  const value = new Date(date);
+  const localDate = new Date(
+    value.getTime() - value.getTimezoneOffset() * 60000,
+  );
+
+  return localDate.toISOString().slice(0, 16);
+};
+
+const getCurrentLocalDateTime = () => {
+  return toLocalDateTime(new Date().toISOString());
 };
 
 export default function ManageEventsPage() {
@@ -73,7 +96,7 @@ export default function ManageEventsPage() {
             Authorization: `Bearer ${token}`,
           },
           cache: "no-store",
-        }
+        },
       );
 
       const result = await response.json();
@@ -85,7 +108,7 @@ export default function ManageEventsPage() {
       setEvents(result.data || []);
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Something went wrong"
+        error instanceof Error ? error.message : "Something went wrong",
       );
     } finally {
       setLoading(false);
@@ -112,16 +135,63 @@ export default function ManageEventsPage() {
       eventType: event.eventType,
       thumbnailUrl: event.thumbnailUrl,
       location: event.location,
-      eventDate: new Date(event.eventDate).toISOString().slice(0, 16),
+      eventDate: toLocalDateTime(event.eventDate),
     });
 
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const handleUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleUpdate = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!editingId) return;
+
+    const title = form.title.trim();
+    const description = form.description.trim();
+    const thumbnailUrl = form.thumbnailUrl.trim();
+    const location = form.location.trim();
+
+    if (title.length < 5 || title.length > 100) {
+      toast.error("Event title must be between 5 and 100 characters");
+      return;
+    }
+
+    if (description.length < 20 || description.length > 2000) {
+      toast.error("Description must be between 20 and 2000 characters");
+      return;
+    }
+
+    if (!eventTypes.includes(form.eventType)) {
+      toast.error("Please select a valid event category");
+      return;
+    }
+
+    try {
+      const imageURL = new URL(thumbnailUrl);
+
+      if (!["http:", "https:"].includes(imageURL.protocol)) {
+        throw new Error("Invalid image URL");
+      }
+    } catch {
+      toast.error("Please enter a valid image URL");
+      return;
+    }
+
+    if (location.length < 3 || location.length > 150) {
+      toast.error("Location must be between 3 and 150 characters");
+      return;
+    }
+
+    const selectedDate = new Date(form.eventDate);
+
+    if (
+      !form.eventDate ||
+      Number.isNaN(selectedDate.getTime()) ||
+      selectedDate <= new Date()
+    ) {
+      toast.error("Please select a valid future event date");
+      return;
+    }
 
     try {
       setSaving(true);
@@ -137,10 +207,14 @@ export default function ManageEventsPage() {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
-            ...form,
-            eventDate: new Date(form.eventDate).toISOString(),
+            title,
+            description,
+            eventType: form.eventType,
+            thumbnailUrl,
+            location,
+            eventDate: selectedDate.toISOString(),
           }),
-        }
+        },
       );
 
       const result = await response.json();
@@ -155,7 +229,7 @@ export default function ManageEventsPage() {
       await fetchEvents();
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Something went wrong"
+        error instanceof Error ? error.message : "Something went wrong",
       );
     } finally {
       setSaving(false);
@@ -175,7 +249,7 @@ export default function ManageEventsPage() {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       const result = await response.json();
@@ -184,9 +258,7 @@ export default function ManageEventsPage() {
         throw new Error(result.message || "Failed to delete event");
       }
 
-      setEvents((current) =>
-        current.filter((event) => event._id !== eventId)
-      );
+      setEvents((current) => current.filter((event) => event._id !== eventId));
 
       if (editingId === eventId) {
         setEditingId(null);
@@ -196,7 +268,7 @@ export default function ManageEventsPage() {
       toast.success("Event deleted successfully!");
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Something went wrong"
+        error instanceof Error ? error.message : "Something went wrong",
       );
     } finally {
       setDeletingId(null);
@@ -236,8 +308,8 @@ export default function ManageEventsPage() {
           </h1>
 
           <p className="mt-5 text-base leading-8 text-[#718078] dark:text-[#a0b2a5]">
-            Keep your community initiatives organized. Update event
-            information or remove events you no longer need.
+            Keep your community initiatives organized. Update event information
+            or remove events you no longer need.
           </p>
         </div>
 
@@ -272,23 +344,28 @@ export default function ManageEventsPage() {
                   minLength={5}
                   maxLength={100}
                   value={form.title}
-                  onChange={(e) =>
-                    setForm({ ...form, title: e.target.value })
-                  }
+                  onChange={(e) => setForm({ ...form, title: e.target.value })}
                   className="mt-2 w-full rounded-xl border border-[#dce5dc] bg-[#f8faf7] px-4 py-3 font-normal outline-none focus:border-[#6d9878] dark:border-[#344b3d] dark:bg-[#101c16]"
                 />
               </label>
 
               <label className="text-sm font-semibold">
                 Event Type
-                <input
+                <select
                   required
                   value={form.eventType}
                   onChange={(e) =>
                     setForm({ ...form, eventType: e.target.value })
                   }
                   className="mt-2 w-full rounded-xl border border-[#dce5dc] bg-[#f8faf7] px-4 py-3 font-normal outline-none focus:border-[#6d9878] dark:border-[#344b3d] dark:bg-[#101c16]"
-                />
+                >
+                  <option value="">Select an event category</option>
+                  {eventTypes.map((type) => (
+                    <option key={type} value={type}>
+                      {type}
+                    </option>
+                  ))}
+                </select>
               </label>
 
               <label className="text-sm font-semibold sm:col-span-2">
@@ -324,6 +401,7 @@ export default function ManageEventsPage() {
                 <input
                   required
                   minLength={3}
+                  maxLength={150}
                   value={form.location}
                   onChange={(e) =>
                     setForm({ ...form, location: e.target.value })
@@ -337,7 +415,7 @@ export default function ManageEventsPage() {
                 <input
                   required
                   type="datetime-local"
-                  min={new Date().toISOString().slice(0, 16)}
+                  min={getCurrentLocalDateTime()}
                   value={form.eventDate}
                   onChange={(e) =>
                     setForm({ ...form, eventDate: e.target.value })
@@ -377,8 +455,8 @@ export default function ManageEventsPage() {
               You haven't created any events yet
             </h2>
             <p className="mx-auto mt-3 max-w-md text-sm leading-7 text-[#718078] dark:text-[#a0b2a5]">
-              Start a community initiative and invite others to make a
-              positive difference together.
+              Start a community initiative and invite others to make a positive
+              difference together.
             </p>
             <Link
               href="/create-event"
@@ -418,7 +496,10 @@ export default function ManageEventsPage() {
 
                   <div className="mt-5 space-y-3 border-t border-[#edf0eb] pt-4 text-sm text-[#718078] dark:border-[#344b3d] dark:text-[#a0b2a5]">
                     <div className="flex items-center gap-2">
-                      <CalendarDays size={16} className="shrink-0 text-[#6d9878]" />
+                      <CalendarDays
+                        size={16}
+                        className="shrink-0 text-[#6d9878]"
+                      />
                       {formatDate(event.eventDate)}
                     </div>
                     <div className="flex items-center gap-2">
@@ -427,10 +508,18 @@ export default function ManageEventsPage() {
                     </div>
                   </div>
 
-                  <div className="mt-6 grid grid-cols-2 gap-3">
+                  <div className="mt-6 grid grid-cols-3 gap-2">
+                    <Link
+                      href={`/upcoming-events/${event._id}`}
+                      className="flex items-center justify-center gap-1.5 rounded-xl bg-[#e8efe8] px-2 py-3 text-sm font-semibold text-[#245b43] transition hover:bg-[#dce9dd] dark:bg-[#263c30] dark:text-[#a9d2b3] dark:hover:bg-[#314c3a]"
+                    >
+                      <Eye size={15} />
+                      View
+                    </Link>
+
                     <button
                       onClick={() => startEditing(event)}
-                      className="flex items-center justify-center gap-2 rounded-xl bg-[#e8efe8] px-3 py-3 text-sm font-semibold text-[#245b43] transition hover:bg-[#dce9dd] dark:bg-[#263c30] dark:text-[#a9d2b3] dark:hover:bg-[#314c3a]"
+                      className="flex items-center justify-center gap-1.5 rounded-xl bg-[#e8efe8] px-2 py-3 text-sm font-semibold text-[#245b43] transition hover:bg-[#dce9dd] dark:bg-[#263c30] dark:text-[#a9d2b3] dark:hover:bg-[#314c3a]"
                     >
                       <Pencil size={15} />
                       Edit
@@ -439,7 +528,7 @@ export default function ManageEventsPage() {
                     <button
                       onClick={() => handleDelete(event._id)}
                       disabled={deletingId === event._id}
-                      className="flex items-center justify-center gap-2 rounded-xl bg-red-50 px-3 py-3 text-sm font-semibold text-red-600 transition hover:bg-red-100 disabled:opacity-60 dark:bg-red-950/30 dark:text-red-400 dark:hover:bg-red-950/50"
+                      className="flex items-center justify-center gap-1.5 rounded-xl bg-red-50 px-2 py-3 text-sm font-semibold text-red-600 transition hover:bg-red-100 disabled:opacity-60 dark:bg-red-950/30 dark:text-red-400 dark:hover:bg-red-950/50"
                     >
                       {deletingId === event._id ? (
                         <LoaderCircle size={15} className="animate-spin" />

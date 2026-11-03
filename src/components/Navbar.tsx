@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -43,6 +42,11 @@ export default function Navbar() {
   const user = session?.user;
   const isDark = mounted && theme === "dark";
 
+  const isActive = (href: string) => {
+    if (href === "/") return pathname === "/";
+    return pathname === href || pathname.startsWith(`${href}/`);
+  };
+
   const toggleTheme = () => {
     if (!mounted) return;
     setTheme(isDark ? "light" : "dark");
@@ -84,16 +88,17 @@ export default function Navbar() {
 
         <div className="hidden items-center gap-9 md:flex">
           {navigation.map((item) => {
-            const active = pathname === item.href;
+            const active = isActive(item.href);
 
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`text-sm font-medium transition-colors ${
+                aria-current={active ? "page" : undefined}
+                className={`rounded-full px-5 py-2.5 text-sm font-medium transition-colors ${
                   active
-                    ? "text-[#245b43] dark:text-[#9ac8a6]"
-                    : "text-[#66736b] hover:text-[#245b43] dark:text-[#a0b2a5] dark:hover:text-[#9ac8a6]"
+                    ? "bg-[#245b43] text-white"
+                    : "text-[#66736b] hover:bg-[#e8efe8] hover:text-[#245b43] dark:text-[#a0b2a5] dark:hover:bg-[#263c30] dark:hover:text-[#9ac8a6]"
                 }`}
               >
                 {item.label}
@@ -165,13 +170,19 @@ export default function Navbar() {
                       { label: "Joined Events", href: "/joined-events", icon: CalendarDays },
                     ].map((item) => {
                       const Icon = item.icon;
+                      const active = isActive(item.href);
 
                       return (
                         <Link
                           key={item.href}
                           href={item.href}
                           onClick={closeMenus}
-                          className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-[#53645a] hover:bg-[#f1f5ef] hover:text-[#245b43] dark:text-[#b7c8bb] dark:hover:bg-[#263c30] dark:hover:text-[#a9d2b3]"
+                          aria-current={active ? "page" : undefined}
+                          className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-colors ${
+                            active
+                              ? "bg-[#e8efe8] text-[#245b43] dark:bg-[#263c30] dark:text-[#a9d2b3]"
+                              : "text-[#53645a] hover:bg-[#f1f5ef] hover:text-[#245b43] dark:text-[#b7c8bb] dark:hover:bg-[#263c30] dark:hover:text-[#a9d2b3]"
+                          }`}
                         >
                           <Icon size={17} />
                           {item.label}
@@ -197,14 +208,22 @@ export default function Navbar() {
             <>
               <Link
                 href="/login"
-                className="rounded-full px-5 py-2.5 text-sm font-semibold text-[#245b43] transition hover:bg-[#e8efe8] dark:text-[#a9d2b3] dark:hover:bg-[#263c30]"
+                className={`rounded-full px-5 py-2.5 text-sm font-semibold transition ${
+                  isActive("/login")
+                    ? "bg-[#245b43] text-white"
+                    : "text-[#245b43] hover:bg-[#e8efe8] dark:text-[#a9d2b3] dark:hover:bg-[#263c30]"
+                }`}
               >
                 Login
               </Link>
 
               <Link
                 href="/register"
-                className="rounded-full bg-[#245b43] px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-[#194832]"
+                className={`rounded-full px-6 py-2.5 text-sm font-semibold transition ${
+                  isActive("/register")
+                    ? "bg-[#194832] text-white"
+                    : "bg-[#245b43] text-white hover:bg-[#194832]"
+                }`}
               >
                 Get Started
               </Link>
@@ -236,20 +255,25 @@ export default function Navbar() {
       {mobileOpen && (
         <div className="border-t border-[#e5e9e2] bg-[#f8f8f3] px-5 py-5 dark:border-[#263c30] dark:bg-[#101c16] md:hidden">
           <div className="mx-auto flex max-w-7xl flex-col gap-2">
-            {navigation.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={closeMenus}
-                className={`rounded-xl px-4 py-3 text-sm font-medium ${
-                  pathname === item.href
-                    ? "bg-[#e8efe8] text-[#245b43] dark:bg-[#263c30] dark:text-[#a9d2b3]"
-                    : "text-[#66736b] hover:bg-[#edf2eb] dark:text-[#b7c8bb] dark:hover:bg-[#263c30]"
-                }`}
-              >
-                {item.label}
-              </Link>
-            ))}
+            {navigation.map((item) => {
+              const active = isActive(item.href);
+
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={closeMenus}
+                  aria-current={active ? "page" : undefined}
+                  className={`rounded-xl px-4 py-3 text-sm font-medium transition-colors ${
+                    active
+                      ? "bg-[#245b43] text-white"
+                      : "text-[#66736b] hover:bg-[#e8efe8] hover:text-[#245b43] dark:text-[#b7c8bb] dark:hover:bg-[#263c30] dark:hover:text-[#a9d2b3]"
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
 
             {isPending ? (
               <div className="mt-2 h-10 animate-pulse rounded-xl bg-[#e8efe8] dark:bg-[#263c30]" />
@@ -283,16 +307,25 @@ export default function Navbar() {
                   { label: "Create Event", href: "/create-event" },
                   { label: "Manage Events", href: "/manage-events" },
                   { label: "Joined Events", href: "/joined-events" },
-                ].map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={closeMenus}
-                    className="rounded-xl px-4 py-3 text-sm font-medium text-[#53645a] hover:bg-[#e8efe8] dark:text-[#b7c8bb] dark:hover:bg-[#263c30]"
-                  >
-                    {item.label}
-                  </Link>
-                ))}
+                ].map((item) => {
+                  const active = isActive(item.href);
+
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={closeMenus}
+                      aria-current={active ? "page" : undefined}
+                      className={`rounded-xl px-4 py-3 text-sm font-medium transition-colors ${
+                        active
+                          ? "bg-[#245b43] text-white"
+                          : "text-[#53645a] hover:bg-[#e8efe8] hover:text-[#245b43] dark:text-[#b7c8bb] dark:hover:bg-[#263c30] dark:hover:text-[#a9d2b3]"
+                      }`}
+                    >
+                      {item.label}
+                    </Link>
+                  );
+                })}
 
                 <button
                   type="button"
@@ -307,7 +340,11 @@ export default function Navbar() {
                 <Link
                   href="/login"
                   onClick={closeMenus}
-                  className="flex-1 rounded-full border border-[#245b43] py-3 text-center text-sm font-semibold text-[#245b43] dark:border-[#9ac8a6] dark:text-[#a9d2b3]"
+                  className={`flex-1 rounded-full border py-3 text-center text-sm font-semibold transition ${
+                    isActive("/login")
+                      ? "border-[#245b43] bg-[#245b43] text-white"
+                      : "border-[#245b43] text-[#245b43] hover:bg-[#e8efe8] dark:border-[#9ac8a6] dark:text-[#a9d2b3] dark:hover:bg-[#263c30]"
+                  }`}
                 >
                   Login
                 </Link>
@@ -315,7 +352,11 @@ export default function Navbar() {
                 <Link
                   href="/register"
                   onClick={closeMenus}
-                  className="flex-1 rounded-full bg-[#245b43] py-3 text-center text-sm font-semibold text-white"
+                  className={`flex-1 rounded-full py-3 text-center text-sm font-semibold transition ${
+                    isActive("/register")
+                      ? "bg-[#194832] text-white"
+                      : "bg-[#245b43] text-white hover:bg-[#194832]"
+                  }`}
                 >
                   Get Started
                 </Link>

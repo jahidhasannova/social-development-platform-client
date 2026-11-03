@@ -13,6 +13,7 @@ import {
   Globe2,
   Leaf,
 } from "lucide-react";
+import ImpactStats from "@/components/ImpactStats";
 
 interface Event {
   _id: string;
@@ -203,6 +204,8 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      <ImpactStats />
 
       <section className="border-y border-[#e8ece5] bg-white py-9 dark:border-[#263c30] dark:bg-[#15231b]">
         <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-5 text-center sm:grid-cols-3 sm:px-8 lg:px-10">
@@ -404,32 +407,125 @@ export default async function Home() {
             Take the first step today. Find an event, meet your people, and
             make every moment count.
           </p>
-          <Link
-            href="/upcoming-events"
-            className="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-7 py-4 text-sm font-bold text-[#245b43] transition hover:bg-[#eaf2e9]"
-          >
-            Find an event
-            <ArrowRight size={17} />
-          </Link>
+
+         
+<Link
+  href="/upcoming-events"
+  className="mt-8 group inline-flex items-center gap-3 rounded-full border border-[#8fc6a5]/50 bg-gradient-to-r from-[#245b43] to-[#347b58] px-7 py-3.5 text-sm font-bold text-white shadow-[0_5px_18px_rgba(36,91,67,0.35)] transition-all duration-300 hover:-translate-y-1 hover:from-[#194832] hover:to-[#245b43] hover:shadow-[0_8px_25px_rgba(36,91,67,0.45)]"
+>
+  Find an event
+  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/20 transition-transform duration-300 group-hover:translate-x-1">
+    <ArrowRight size={16} />
+  </span>
+</Link>
+
         </div>
       </section>
 
-      <footer className="border-t border-[#e5e9e2] bg-white dark:border-[#263c30] dark:bg-[#15231b]">
-        <div className="mx-auto flex max-w-7xl flex-col gap-6 px-5 py-9 sm:px-8 md:flex-row md:items-center md:justify-between lg:px-10">
-          <Link href="/" className="flex items-center gap-2">
-            <HeartHandshake size={23} className="text-[#245b43] dark:text-[#9ac8a6]" />
-            <span className="text-xl font-bold text-[#172b22] dark:text-[#edf5ee]">
-              kindora<span className="text-[#6d9878] dark:text-[#9ac8a6]">.</span>
-            </span>
-          </Link>
-          <p className="text-sm text-[#718078] dark:text-[#a0b2a5]">
-            Making kindness a part of everyday life.
-          </p>
-          <p className="text-xs text-[#9aa89d] dark:text-[#7f9b88]">
-            © {new Date().getFullYear()} Kindora. All rights reserved.
-          </p>
+      <section className="relative overflow-hidden bg-[#f8fafc] px-4 py-20 sm:px-6 lg:py-28">
+
+        {/* Background Decorations */}
+        <div className="absolute left-0 top-10 h-72 w-72 rounded-full bg-emerald-200/30 blur-[100px]" />
+        <div className="absolute bottom-0 right-0 h-80 w-80 rounded-full bg-teal-200/30 blur-[100px]" />
+
+        <div className="relative mx-auto max-w-5xl">
+
+          {/* Main Card */}
+          <div className="relative overflow-hidden rounded-[32px] border border-white bg-gradient-to-br from-[#e9f8f5] via-white to-[#eaf8f3] px-6 py-14 shadow-[0_20px_70px_rgba(15,118,110,0.08)] sm:px-12 sm:py-20 lg:px-20">
+
+            {/* Decorative Circle */}
+            <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full border-[35px] border-emerald-100/40" />
+            <div className="absolute -bottom-24 -left-20 h-64 w-64 rounded-full border-[35px] border-teal-100/40" />
+
+            <div className="relative z-10 mx-auto max-w-2xl text-center">
+
+              {/* Badge */}
+              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white/80 px-4 py-2 shadow-sm">
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
+                </span>
+
+                <span className="text-xs font-bold uppercase tracking-[2px] text-emerald-700">
+                  Stay Connected
+                </span>
+              </div>
+
+              {/* Heading */}
+              <h2 className="text-3xl font-extrabold leading-tight tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">
+                Subscribe to{" "}
+                <span className="bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent">
+                  Local Cause
+                </span>
+                <br className="hidden sm:block" /> Alerts
+              </h2>
+
+              {/* Description */}
+              <p className="mx-auto mt-6 max-w-xl text-sm leading-7 text-slate-500 sm:text-base">
+                Get notified when new winter drives, blanket distributions,
+                or emergency cleanups are organized in your neighborhood.
+                Stay informed and be part of something meaningful.
+              </p>
+
+              {/* Subscribe Form UI */}
+              <div className="mx-auto mt-9 flex max-w-xl flex-col gap-3 sm:flex-row">
+
+                <input
+                  type="email"
+                  placeholder="Enter your email address"
+                  className="h-14 min-w-0 flex-1 rounded-2xl border border-slate-200 bg-white/90 px-5 text-sm text-slate-700 shadow-sm outline-none transition-all placeholder:text-slate-400 focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100"
+                />
+
+                <button
+                  type="button"
+                  className="group flex h-14 items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-500 px-8 text-sm font-bold text-white shadow-lg shadow-emerald-600/20 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-emerald-600/30 active:scale-95"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="19"
+                    height="19"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="transition-transform group-hover:translate-x-1"
+                  >
+                    <path d="m22 2-7 20-4-9-9-4Z" />
+                    <path d="M22 2 11 13" />
+                  </svg>
+
+                  Subscribe
+                </button>
+              </div>
+
+              {/* Privacy Text */}
+              <div className="mt-7 flex items-center justify-center gap-2 text-xs text-slate-400">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11Z" />
+                  <path d="m9 12 2 2 4-4" />
+                </svg>
+
+                <span>
+                  No spam guaranteed. Unsubscribe at any time.
+                </span>
+              </div>
+
+            </div>
+          </div>
         </div>
-      </footer>
+      </section>
     </main>
   );
 }

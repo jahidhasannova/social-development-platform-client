@@ -4,6 +4,7 @@ import { Toaster } from "sonner";
 import Navbar from "@/components/Navbar";
 import ThemeProvider from "@/components/ThemeProvider";
 import "./globals.css";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "Kindora | Make a Difference Together",
@@ -22,6 +23,7 @@ export default function RootLayout({
         <ThemeProvider>
           <Navbar />
           {children}
+          <Footer></Footer>
           <Toaster
             position="top-right"
             richColors
