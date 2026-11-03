@@ -1,36 +1,102 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🌱 Kindora – Social Development Events Platform
 
-## Getting Started
+**Building a better community, one event at a time.**
 
-First, run the development server:
+Kindora is a community-driven social development platform designed to connect people through meaningful community service activities. It allows users to create events, explore upcoming initiatives, join social causes, and manage their contributions to make a positive impact on society.
+
+🌐 **Live Website:** YOUR_LIVE_WEBSITE_URL
+
+---
+
+## ✨ Key Features
+
+- **User Authentication:** Secure email and password authentication with Google sign-in.
+- **Create Events:** Authenticated users can organize social development events with titles, descriptions, event types, locations, dates, and thumbnail images.
+- **Explore Upcoming Events:** Discover community service events through a dynamic and responsive event listing.
+- **Event Details:** View complete information about individual events.
+- **Join Events:** Logged-in users can participate in community initiatives.
+- **Manage Events:** Users can view, update, and delete their own created events.
+- **Joined Events:** Keep track of all events joined by the logged-in user.
+- **User Profile:** View and update personal information and profile pictures.
+- **Theme Customization:** Switch between light and dark modes.
+- **Loading Skeletons:** Enjoy smoother navigation with loading states across important pages.
+- **Responsive Design:** Optimized layouts for mobile, tablet, and desktop devices.
+
+## 🛠️ Technologies Used
+
+### Frontend
+- Next.js (App Router)
+- React
+- TypeScript
+- Tailwind CSS
+- Hero UI
+- Lucide React
+
+### Authentication & Backend Integration
+- Better Auth
+- MongoDB
+- Express.js
+- JWT
+
+### Additional Tools
+- Git & GitHub
+- Vercel
+- Sonner
+
+## 📸 Project Highlights
+
+Kindora focuses on creating a clean, modern, and user-friendly experience for people who want to participate in social development activities.
+
+Main sections include:
+
+- Home Page
+- Upcoming Events
+- Event Details
+- Create Event
+- Manage Events
+- Joined Events
+- User Profile
+- Login & Registration
+
+## ⚙️ Run Locally
+
+### 1. Clone the Repository
+
+```bash
+git clone YOUR_CLIENT_REPOSITORY_URL
+```
+
+### 2. Navigate to the Client Directory
+
+```bash
+cd client
+```
+
+### 3. Install Dependencies
+
+```bash
+npm install
+```
+
+### 4. Configure Environment Variables
+
+Create a `.env.local` file in the client root directory and configure the required environment variables.
+
+### 5. Start the Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🎯 Project Purpose
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Kindora aims to make community service more accessible by bringing event organizers and volunteers together in one platform.
 
-## Learn More
+Whether it is distributing winter clothes, helping people in need, planting trees, or organizing neighborhood cleanups, Kindora encourages everyone to contribute towards a better society.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Developed with ❤️ for a better community.**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
