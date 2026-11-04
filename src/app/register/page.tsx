@@ -250,7 +250,9 @@ export default function RegisterPage() {
               href="/login"
               className="font-bold text-[#245b43] hover:underline dark:text-[#a9d2b3]"
             >
-              Sign In
+              <span className="text-green-800 dark:text-[#a9d2b3]">
+                 Sign In
+              </span>
             </Link>
           </p>
         </div>

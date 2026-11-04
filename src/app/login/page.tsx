@@ -170,11 +170,10 @@ export default function LoginPage() {
 
           <p className="mt-7 text-center text-sm text-[#718078] dark:text-[#a0b2a5]">
             Don't have an account?{" "}
-            <Link
-              href="/register"
-              className="font-bold text-[#245b43] hover:underline dark:text-[#a9d2b3]"
-            >
-              Create Account
+            <Link href="/register" className="font-bold hover:underline">
+              <span className="text-green-800 dark:text-[#a9d2b3]">
+                Create Account
+              </span>
             </Link>
           </p>
         </div>
