@@ -63,13 +63,13 @@ Main sections include:
 ### 1. Clone the Repository
 
 ```bash
-git clone YOUR_CLIENT_REPOSITORY_URL
+git clone https://github.com/jahidhasannova/social-development-platform-client.git
 ```
 
 ### 2. Navigate to the Client Directory
 
 ```bash
-cd client
+	cd social-development-platform-client
 ```
 
 ### 3. Install Dependencies
@@ -98,5 +98,5 @@ Whether it is distributing winter clothes, helping people in need, planting tree
 
 ---
 
-**Developed with ❤️ for a better community.**
+**Developed with ❤️ by Jahid Hasan.**
 
