@@ -4,7 +4,7 @@
 
 Kindora is a community-driven social development platform designed to connect people through meaningful community service activities. It allows users to create events, explore upcoming initiatives, join social causes, and manage their contributions to make a positive impact on society.
 
-🌐 **Live Website:** YOUR_LIVE_WEBSITE_URL
+🌐 **Live Website:** https://social-development-platform-client-seven.vercel.app/
 
 ---
 
