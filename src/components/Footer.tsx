@@ -87,7 +87,7 @@ export default function Footer() {
                         © 2026 Kindora. All rights reserved.
                     </p>
 
-                    <p>Small actions. Meaningful impact.</p>
+                    <p>Designed & Developed by Jahid Hasan</p>
                 </div>
             </div>
         </footer>
